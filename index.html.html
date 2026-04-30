@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remembering Forward | Kigali 1994–2024</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Spectral:ital,wght@0,300;0,400;1,300&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root {
+  --dark-bg: #0d0b09;
+  --dark-surface: #141210;
+  --dark-text: #e2dbd1;
+  --dark-muted: #8a8278;
+  --gold: #c8a46e;
+  --gold-dim: rgba(200,164,110,0.15);
+  --gold-border: rgba(200,164,110,0.25);
+  --crimson: #b83232;
+  --light-bg: #f6f1e9;
+  --light-surface: #ece6dc;
+  --light-text: #191410;
+  --light-muted: #6a5f55;
+  --green: #2a6348;
+  --green-dim: rgba(42,99,72,0.1);
+  --green-border: rgba(42,99,72,0.25);
+  --font-d: 'Cormorant Garamond', Georgia, serif;
+  --font-b: 'Spectral', Georgia, serif;
+  --font-u: 'Raleway', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-b); background: var(--dark-bg); color: var(--dark-text); overflow-x: hidden; }
+
+/* ── COVER ─────────────────────────────────────────────────────── */
+.cover {
+  position: relative;
+  height: 100vh; min-height: 580px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--dark-bg); overflow: hidden;
+}
+.cover-grain {
+  position: absolute; inset: 0; z-index: 1; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+.cover-glow {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(200,164,110,0.06) 0%, transparent 70%);
+}
+.cover-lines {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(200,164,110,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,164,110,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.cover-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 2rem; max-width: 820px;
+}
+.cover-flag {
+  font-family: var(--font-u); font-size: 0.62rem; font-weight: 400;
+  letter-spacing: 0.45em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 2rem; opacity:0; animation: fu 1s 0.2s forwards;
+}
+.cover-title {
+  font-family: var(--font-d); font-weight: 300; line-height: 0.92;
+  font-size: clamp(3.5rem, 9vw, 7.5rem); color: #fff; letter-spacing: -0.02em;
+  margin-bottom: 0.2em; opacity:0; animation: fu 1s 0.45s forwards;
+}
+.cover-title em { font-style: italic; color: var(--gold); display: block; }
+.cover-sub {
+  font-family: var(--font-d); font-size: clamp(1rem, 2.2vw, 1.4rem);
+  font-weight: 300; font-style: italic; color: var(--dark-muted);
+  margin-bottom: 2.5rem; opacity:0; animation: fu 1s 0.7s forwards;
+}
+.cover-byline {
+  font-family: var(--font-u); font-size: 0.65rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: rgba(200,164,110,0.5);
+  opacity:0; animation: fu 1s 0.9s forwards;
+}
+.cover-caret {
+  position: absolute; bottom: 2.5rem; left:50%; transform:translateX(-50%);
+  z-index:2; display:flex; flex-direction:column; align-items:center; gap:0.6rem;
+  opacity:0; animation: fu 1s 1.5s forwards;
+}
+.cover-caret span {
+  font-family: var(--font-u); font-size: 0.58rem; letter-spacing:0.3em;
+  text-transform:uppercase; color: var(--dark-muted);
+}
+.caret-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: blink 2.2s 2s infinite;
+}
+@keyframes fu { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+@keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* ── SECTION COMMON ────────────────────────────────────────────── */
+.section-mark {
+  font-family: var(--font-u); font-size: 0.58rem; letter-spacing:0.42em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 1.8rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.section-mark::before { content:''; display:inline-block; width:2rem; height:1px; background:var(--gold); flex-shrink:0; }
+.section-mark.green { color: var(--green); }
+.section-mark.green::before { background: var(--green); }
+
+/* ── PROLOGUE ──────────────────────────────────────────────────── */
+.prologue { background: var(--dark-bg); padding: 7rem 2rem; }
+.prologue-inner { max-width: 700px; margin: 0 auto; }
+.prologue-h { font-family: var(--font-d); font-size: clamp(2rem,4.5vw,3.2rem); font-weight:300; line-height:1.15; color: var(--dark-text); margin-bottom:1.8rem; }
+.prologue-hills {
+  font-family: var(--font-d); font-size: clamp(1.2rem,2.5vw,1.7rem);
+  font-weight:300; font-style:italic; color: var(--gold); line-height:1.9;
+  text-align:center; letter-spacing:0.06em; margin:2.2rem 0;
+}
+.prose {
+  font-family: var(--font-b); font-size: 1.05rem; font-weight:300;
+  line-height: 1.9; color: var(--dark-muted); margin-bottom: 1.1rem;
+}
+.prose.light { color: var(--light-muted); }
+.divider { width:2.5rem; height:1px; background: var(--gold); margin: 2.2rem 0; }
+.divider.green { background: var(--green); }
+
+/* ── BLOCKQUOTE ─────────────────────────────────────────────────── */
+.bq { margin: 2.5rem 0; padding: 1.4rem 0 1.4rem 1.6rem; border-left: 2px solid var(--gold); }
+.bq.green { border-left-color: var(--green); }
+.bq-text { font-family: var(--font-d); font-size: 1.2rem; font-weight:300; font-style:italic; line-height:1.7; color: var(--dark-text); }
+.bq-text.dark { color: var(--light-text); }
+.bq-source { font-family: var(--font-u); font-size: 0.6rem; letter-spacing:0.22em; text-transform:uppercase; color: var(--gold); margin-top:0.9rem; }
+.bq-source.green { color: var(--green); }
+
+/* ── STATS ───────────────────────────────────────────────────────── */
+.stats { display:flex; gap:1.2rem; margin:2rem 0; flex-wrap:wrap; }
+.stat {
+  flex:1; min-width:110px; padding:1.2rem;
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+}
+.stat.green-stat { background: var(--green-dim); border-color: var(--green-border); }
+.stat-v { font-family: var(--font-d); font-size:1.9rem; font-weight:600; color: var(--gold); line-height:1; margin-bottom:0.35rem; }
+.stat-v.gv { color: var(--green); }
+.stat-l { font-family: var(--font-u); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color: var(--dark-muted); line-height:1.4; }
+.stat-l.glb { color: var(--light-muted); }
+.stat-s { font-family: var(--font-u); font-size:0.53rem; color: var(--dark-muted); margin-top:0.25rem; opacity:0.6; }
+
+/* ── SIDECAR ─────────────────────────────────────────────────────── */
+.sidecar { display:flex; align-items:flex-start; background: var(--dark-bg); }
+.sidecar.light { background: var(--light-bg); }
+.sc-map { position:sticky; top:0; width:50%; height:100vh; flex-shrink:0; }
+.sc-map > div { width:100%; height:100%; }
+.sc-story { flex:1; padding: 4rem 3.5rem 4rem 4.5rem; }
+
+/* ── MAP OVERLAY UI ─────────────────────────────────────────────── */
+.map-tag {
+  position:absolute; top:1rem; left:1rem; z-index:1000;
+  background: rgba(13,11,9,0.88); border:1px solid var(--gold-border);
+  padding: 0.55rem 1rem; backdrop-filter:blur(8px); pointer-events:none;
+}
+.map-tag.lgt {
+  background: rgba(246,241,233,0.92); border-color: var(--green-border);
+}
+.map-tag span { font-family: var(--font-u); font-size:0.58rem; letter-spacing:0.28em; text-transform:uppercase; color: var(--gold); }
+.map-tag.lgt span { color: var(--green); }
+.map-legend {
+  position:absolute; bottom:1.5rem; right:0.8rem; z-index:1000;
+  background: rgba(13,11,9,0.9); border:1px solid var(--gold-border);
+  padding:1rem; backdrop-filter:blur(8px); max-width:175px;
+}
+.map-legend.lgt { background:rgba(246,241,233,0.92); border-color:var(--green-border); }
+.leg-title { font-family:var(--font-u); font-size:0.52rem; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+.leg-title.lgt { color:var(--green); }
+.leg-row { display:flex; align-items:center; gap:0.55rem; margin-bottom:0.38rem; }
+.leg-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.leg-lbl { font-family:var(--font-u); font-size:0.58rem; color: var(--dark-muted); }
+.leg-lbl.lgt { color: var(--light-muted); }
+
+/* ── NARRATIVE PANEL ─────────────────────────────────────────────── */
+.n-panel {
+  min-height: 92vh; display:flex; flex-direction:column;
+  justify-content:center; padding: 5rem 0;
+  border-bottom: 1px solid rgba(200,164,110,0.08);
+}
+.n-panel:last-child { border-bottom:none; }
+.sidecar.light .n-panel { border-bottom-color: rgba(42,99,72,0.08); }
+.act-tag { font-family:var(--font-u); font-size:0.57rem; letter-spacing:0.42em; text-transform:uppercase; color:var(--gold); margin-bottom:1.4rem; }
+.sidecar.light .act-tag { color: var(--green); }
+.n-h { font-family:var(--font-d); font-size:clamp(1.7rem,2.8vw,2.6rem); font-weight:300; line-height:1.2; color:var(--dark-text); margin-bottom:1.5rem; }
+.sidecar.light .n-h { color: var(--light-text); }
+.n-p { font-family:var(--font-b); font-size:1rem; font-weight:300; line-height:1.88; color:var(--dark-muted); margin-bottom:0.95rem; }
+.sidecar.light .n-p { color: var(--light-muted); }
+
+/* ── TRANSITION ─────────────────────────────────────────────────── */
+.transition { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.tr-bg { position:absolute; inset:0; background: linear-gradient(150deg, #0d0b09 0%, #171410 35%, #1c1a16 48%, #c4b89a 65%, #e8e2d6 80%, var(--light-bg) 100%); }
+.tr-content { position:relative; z-index:1; max-width:680px; padding:4rem 2.5rem; text-align:center; }
+.tr-eye { font-family:var(--font-u); font-size:0.62rem; letter-spacing:0.44em; text-transform:uppercase; color:var(--gold); margin-bottom:1.8rem; }
+.tr-h { font-family:var(--font-d); font-size:clamp(2.5rem,5vw,4.2rem); font-weight:300; font-style:italic; color:#fff; line-height:1.12; margin-bottom:1.8rem; text-shadow:0 2px 24px rgba(0,0,0,0.55); }
+.tr-p { font-family:var(--font-b); font-size:1.05rem; font-weight:300; line-height:1.8; color:rgba(255,255,255,0.68); margin-bottom:3rem; text-shadow:0 1px 12px rgba(0,0,0,0.4); }
+.tr-stats { display:flex; gap:2.5rem; justify-content:center; flex-wrap:wrap; }
+.tr-stat span:first-child { font-family:var(--font-d); font-size:2rem; font-weight:600; color:var(--gold); display:block; line-height:1; }
+.tr-stat span:last-child { font-family:var(--font-u); font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.45); display:block; margin-top:0.4rem; }
+
+/* ── EPILOGUE ─────────────────────────────────────────────────────── */
+.epilogue { background:var(--light-bg); padding: 7rem 2rem; }
+.epilogue-inner { max-width:700px; margin:0 auto; }
+.ep-h { font-family:var(--font-d); font-size:clamp(1.8rem,3vw,2.8rem); font-weight:300; color:var(--light-text); margin-bottom:1.5rem; }
+
+/* ── CTA ─────────────────────────────────────────────────────────── */
+.cta { background:var(--dark-bg); padding:7rem 2rem; text-align:center; }
+.cta-inner { max-width:760px; margin:0 auto; }
+.cta-h { font-family:var(--font-d); font-size:clamp(2.5rem,5vw,4.8rem); font-weight:300; font-style:italic; color:var(--dark-text); margin-bottom:3rem; line-height:1.1; }
+.cta-h em { color:var(--gold); }
+.cta-tiers { display:grid; grid-template-columns:repeat(auto-fit,minmax(195px,1fr)); gap:1.5rem; margin:3rem 0; text-align:left; }
+.cta-tier { padding:1.6rem; border:1px solid var(--gold-border); }
+.cta-tier-tag { font-family:var(--font-u); font-size:0.57rem; letter-spacing:0.38em; text-transform:uppercase; color:var(--gold); margin-bottom:0.9rem; }
+.cta-tier-p { font-family:var(--font-b); font-size:0.93rem; font-weight:300; line-height:1.75; color:var(--dark-muted); }
+.cta-partners { margin-top:4.5rem; padding-top:2rem; border-top:1px solid rgba(200,164,110,0.13); }
+.partners-label { font-family:var(--font-u); font-size:0.57rem; letter-spacing:0.32em; text-transform:uppercase; color:var(--dark-muted); margin-bottom:1.5rem; }
+.partners-row { display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; }
+.partner { font-family:var(--font-u); font-size:0.65rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:rgba(200,164,110,0.6); }
+.cta-note { font-family:var(--font-u); font-size:0.56rem; letter-spacing:0.1em; color:rgba(138,130,120,0.55); margin-top:4rem; line-height:1.7; }
+
+/* ── LEAFLET OVERRIDES ───────────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background:rgba(18,15,12,0.96) !important;
+  border:1px solid rgba(200,164,110,0.3) !important;
+  border-radius:0 !important;
+  box-shadow:0 4px 24px rgba(0,0,0,0.6) !important;
+  color: var(--dark-text) !important;
+}
+.leaflet-popup-content {
+  font-family: var(--font-u) !important;
+  font-size: 0.73rem !important;
+  line-height: 1.65 !important;
+  color: var(--dark-text) !important;
+  margin: 0.9rem !important;
+}
+.leaflet-popup-content b { color: var(--gold) !important; font-size:0.82rem !important; display:block; margin-bottom:0.25rem; }
+.leaflet-popup-content i { color: var(--dark-muted) !important; font-style:normal; }
+.leaflet-popup-tip-container .leaflet-popup-tip { background:rgba(200,164,110,0.35) !important; }
+.leaflet-popup-close-button { color: var(--gold) !important; }
+.leaflet-control-zoom a { background:rgba(13,11,9,0.9) !important; color:var(--gold) !important; border-color:var(--gold-border) !important; }
+.leaflet-control-attribution { font-size:0.5rem !important; background:rgba(0,0,0,0.5) !important; color:#666 !important; }
+.leaflet-control-attribution a { color:#888 !important; }
+
+/* ── REVEAL ──────────────────────────────────────────────────────── */
+.rv { opacity:0; transform:translateY(20px); transition: opacity 0.75s ease, transform 0.75s ease; }
+.rv.in { opacity:1; transform:none; }
+.rv-d2 { transition-delay: 0.15s; }
+.rv-d3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .sidecar { flex-direction: column; }
+  .sc-map { position:relative; width:100%; height:45vh; }
+  .sc-story { padding: 3rem 1.5rem; }
+  .tr-stats { gap:1.5rem; }
+  .cta-tiers { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     COVER
+═══════════════════════════════════════════════════════════════ -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-lines"></div>
+  <div class="cover-glow"></div>
+  <div class="cover-content">
+    <p class="cover-flag">Kigali &nbsp;·&nbsp; Rwanda &nbsp;·&nbsp; 1994 – 2024</p>
+    <h1 class="cover-title">
+      <em>Remembering</em>
+      Forward
+    </h1>
+    <p class="cover-sub">Community Voices from Kigali's Thirty Years of Rebuilding</p>
+    <p class="cover-byline">A Story Map</p>
+  </div>
+  <div class="cover-caret">
+    <span>Scroll to begin</span>
+    <div class="caret-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PROLOGUE
+═══════════════════════════════════════════════════════════════ -->
+<section class="prologue">
+  <div class="prologue-inner">
+    <div class="section-mark rv">Prologue — The Weight of the Hills</div>
+    <h2 class="prologue-h rv">Kigali's hills have names.</h2>
+    <p class="prologue-hills rv">Kiyovu.&nbsp; Nyamirambo.&nbsp; Kimironko.<br>Gisozi.&nbsp; Remera.&nbsp; Kanombe.</p>
+    <p class="prose rv">They are not just geography. They are living memory — of what happened in named places, and of what was built again in those same places, by the same communities, across thirty extraordinary years.</p>
+    <p class="prose rv rv-d2">This story belongs to the people who stayed. To the ones who came back. To the young people who were born into a Kigali already beginning to rise. And to the quiet communities on the city's edges whose resilience anchored every hill.</p>
+    <p class="prose rv rv-d3">It is a story about loss. It is also, more than anything, a story about what communities choose to do with loss.</p>
+    <div class="divider rv"></div>
+    <p class="prose rv">Kigali sits at the center of Rwanda — a city of approximately 1.4 million people today, covering roughly 730 square kilometers across three districts: Gasabo, Kicukiro, and Nyarugenge. Each of those districts carries history. Each hill has a name. Each name, for anyone who lived through 1994, contains a world of memory.</p>
+    <div class="bq rv">
+      <p class="bq-text">"The hills did not change. Everything on them did. And then, slowly, everything was built again."</p>
+      <p class="bq-source">Composite voice — Kiyovu survivor testimony</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DARK SIDECAR — ACTS 1 & 2
+═══════════════════════════════════════════════════════════════ -->
+<div class="sidecar" id="darkSidecar">
+  <div class="sc-map" id="scMap1">
+    <div id="map1"></div>
+    <div class="map-tag" id="tag1"><span id="tagTxt1">Kigali Overview</span></div>
+    <div class="map-legend" id="leg1">
+      <div class="leg-title">Map Layers</div>
+      <div class="leg-row"><div class="leg-dot" style="background:#b83232"></div><span class="leg-lbl">Memorial Sites</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#f39c12"></div><span class="leg-lbl">Reconciliation Villages</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#e67e22"></div><span class="leg-lbl">Gacaca Courts</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#d63870"></div><span class="leg-lbl">Civil Society</span></div>
+    </div>
+  </div>
+
+  <div class="sc-story">
+
+    <!-- 1.1 -->
+    <div class="n-panel" data-sec1="overview">
+      <p class="act-tag rv">Act 1 — Before the Sky Fell</p>
+      <h2 class="n-h rv">Kigali in 1994</h2>
+      <p class="n-p rv">Kigali in early 1994 was a city of around 350,000 people — small by African capital standards, spread across its characteristic hills. Nyarugenge was the commercial and administrative center. Nyamirambo was the city's liveliest quarter, its mosques and markets filling the valley below Kiyovu hill. Kimironko, in Gasabo, was a neighborhood of ordinary urban life — small businesses, teachers, civil servants, families building middle-class futures.</p>
+      <p class="n-p rv rv-d2">It was a city of neighbors. And neighbors knew each other's names.</p>
+    </div>
+
+    <!-- 1.2 -->
+    <div class="n-panel" data-sec1="act1-gisozi">
+      <p class="act-tag rv">Act 1 — Panel 1.2</p>
+      <h2 class="n-h rv">April 7, 1994</h2>
+      <p class="n-p rv">On April 7, 1994, the genocide against the Tutsi began. Over the next one hundred days, an estimated 500,000 to 800,000 Tutsi and moderate Hutu were killed across Rwanda — tens of thousands of them in Kigali itself, in churches, in schools, in the streets of the very neighborhoods described above.</p>
+      <p class="n-p rv rv-d2">A map can do something a statistic cannot: it can place those losses in specific named places, on specific hills, and let the people who were there speak about what they witnessed — and what they chose to do afterward.</p>
+      <div class="stats rv rv-d3">
+        <div class="stat">
+          <div class="stat-v">800K–1M</div>
+          <div class="stat-l">Rwandans killed in 100 days</div>
+          <div class="stat-s">Source: Aegis Trust / UN estimates</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">100</div>
+          <div class="stat-l">Days the genocide lasted</div>
+          <div class="stat-s">April 7 – July 15, 1994</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">~90%</div>
+          <div class="stat-l">Kigali population displaced by mid-1994</div>
+          <div class="stat-s">Source: UNHCR Rwanda</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.3 -->
+    <div class="n-panel" data-sec1="act1-memorials">
+      <p class="act-tag rv">Act 1 — Panel 1.3</p>
+      <h2 class="n-h rv">What Was Lost on Each Hill</h2>
+      <p class="n-p rv">The Kigali Genocide Memorial at Gisozi holds the remains of more than 250,000 victims. It is the largest genocide memorial in Rwanda — and it sits on a hill that, thirty years later, is also surrounded by schools, health centers, and a city that has kept growing.</p>
+      <p class="n-p rv rv-d2">That coexistence — of memory and life — is not an accident. It is the deliberate choice Kigali made.</p>
+      <div class="bq rv rv-d3">
+        <p class="bq-text">"I knew every family on my hill. After July, I could count the ones still here on two hands. We buried them. Then we had to decide what to do with ourselves."</p>
+        <p class="bq-source">Composite voice from gacaca court testimonies — Nyamirambo sector</p>
+      </div>
+    </div>
+
+    <!-- 2.1 -->
+    <div class="n-panel" data-sec1="act2-survivor">
+      <p class="act-tag rv">Act 2 — The Voices That Stayed</p>
+      <h2 class="n-h rv">The Survivor Voice</h2>
+      <p class="n-p rv">The composite voices in this section are drawn from documented testimonies in gacaca court records, Never Again Rwanda published accounts, and Ibuka survivor organization documentation. They represent the experience of thousands, told through the patterns of what survivors actually said.</p>
+      <div class="bq rv rv-d2">
+        <p class="bq-text">"When the gacaca came to our hill, I was afraid. I thought: what good is talking going to do? But then the man who had hidden my children stood up and said so, in front of everyone. That is what gacaca asked of us. Not to forget. To know, and still to live together."</p>
+        <p class="bq-source">Composite survivor voice — Gasabo district, drawn from Never Again Rwanda testimonies</p>
+      </div>
+    </div>
+
+    <!-- 2.2 -->
+    <div class="n-panel" data-sec1="act2-gacaca">
+      <p class="act-tag rv">Act 2 — Panel 2.2</p>
+      <h2 class="n-h rv">Gacaca Courts: Community Justice at Scale</h2>
+      <p class="n-p rv">Between 2001 and 2012, Rwanda's gacaca courts processed approximately 1.9 million cases across the country — the largest community-based transitional justice process in recorded history. In Kigali alone, hundreds of community courts convened on the hills where the violence had occurred, with neighbors serving as judges, witnesses, and participants.</p>
+      <p class="n-p rv rv-d2">Gacaca was imperfect — its advocates will say so directly. But it did something that conventional courts could not: it returned justice to the hills where the losses had happened, and it required communities to be present for it.</p>
+      <div class="stats rv rv-d3">
+        <div class="stat">
+          <div class="stat-v">~1.9M</div>
+          <div class="stat-l">Cases processed nationwide</div>
+          <div class="stat-s">Source: Rwanda Governance Board, 2012</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">169K</div>
+          <div class="stat-l">Community judges served</div>
+          <div class="stat-s">Elected inyangamugayo</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">11</div>
+          <div class="stat-l">Years gacaca operated</div>
+          <div class="stat-s">2001–2012</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 -->
+    <div class="n-panel" data-sec1="act2-returnees">
+      <p class="act-tag rv">Act 2 — Panel 2.3</p>
+      <h2 class="n-h rv">The Returnee Voice</h2>
+      <p class="n-p rv">Not all of Kigali's survivors stayed during the genocide. Many fled — to Uganda, to Congo, to Tanzania, to Europe and North America — and returned after July 1994 to a city that was simultaneously emptied, shattered, and beginning to stir.</p>
+      <div class="bq rv rv-d2">
+        <p class="bq-text">"I came back at nineteen to a city I had never really lived in, to a country asking everyone to build something together. I was terrified. I was also, I think, the luckiest generation — we came back when it was still soft enough to shape."</p>
+        <p class="bq-source">Composite returnee voice — Kimironko neighborhood, drawn from diaspora return documentation</p>
+      </div>
+    </div>
+
+    <!-- 2.4 -->
+    <div class="n-panel" data-sec1="act2-villages">
+      <p class="act-tag rv">Act 2 — Panel 2.4</p>
+      <h2 class="n-h rv">The Reconciliation Villages</h2>
+      <p class="n-p rv">Among the most remarkable experiments of Rwanda's recovery are its reconciliation villages — planned communities where survivors and the families of perpetrators were deliberately settled together, sharing land, water, and daily life. The best-documented is Mbyo village in Bugesera district, where more than sixty families built homes side by side.</p>
+      <p class="n-p rv rv-d2">These villages did not emerge from outside intervention. They were proposed, in part, by survivors themselves — people who decided that the most powerful response to what had been done to them was to refuse the logic of permanent separation.</p>
+      <div class="bq rv rv-d3">
+        <p class="bq-text">"My neighbor's father killed my father. We both know this. We have talked about it. He did not choose his father's actions. I did not choose to lose mine. We chose to be neighbors. That is the only part that was ever ours to decide."</p>
+        <p class="bq-source">Composite voice — Mbyo reconciliation village, drawn from Aegis Trust and Never Again Rwanda documentation</p>
+      </div>
+    </div>
+
+  </div><!-- /sc-story -->
+</div><!-- /dark sidecar -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TRANSITION
+═══════════════════════════════════════════════════════════════ -->
+<section class="transition" id="transitionPanel">
+  <div class="tr-bg"></div>
+  <div class="tr-content">
+    <p class="tr-eye">The Turn</p>
+    <h2 class="tr-h">Choosing Forward</h2>
+    <p class="tr-p">There is a moment in every recovery story — not a single date, but a felt shift — when communities stop asking whether rebuilding is possible and start asking how. In Kigali, that shift happened at different times for different people. The dark we have been reading on gives way now to the city that emerged from those choices.</p>
+    <div class="tr-stats">
+      <div class="tr-stat">
+        <span>&gt;500%</span>
+        <span>Kigali GDP per capita growth<br>2000–2024 · World Bank</span>
+      </div>
+      <div class="tr-stat">
+        <span>350K → 1.4M</span>
+        <span>Kigali population<br>1994–2024 · RNIS</span>
+      </div>
+      <div class="tr-stat">
+        <span>200+</span>
+        <span>New community health centers<br>built 1994–2010 · Ministry of Health</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LIGHT SIDECAR — ACTS 3 & 4
+═══════════════════════════════════════════════════════════════ -->
+<div class="sidecar light" id="lightSidecar">
+  <div class="sc-map" id="scMap2">
+    <div id="map2"></div>
+    <div class="map-tag lgt" id="tag2"><span id="tagTxt2" style="color:var(--green)">Kigali Rebuilt</span></div>
+    <div class="map-legend lgt" id="leg2">
+      <div class="leg-title lgt">Map Layers</div>
+      <div class="leg-row"><div class="leg-dot" style="background:#27ae60"></div><span class="leg-lbl lgt">Community Health</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#2980b9"></div><span class="leg-lbl lgt">Reconstruction</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#7d5a3c"></div><span class="leg-lbl lgt">Peri-Urban Communities</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#16a085"></div><span class="leg-lbl lgt">Innovation Hubs</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#6c3d8a"></div><span class="leg-lbl lgt">Universities</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#c8960a"></div><span class="leg-lbl lgt">Kwibuka</span></div>
+    </div>
+  </div>
+
+  <div class="sc-story">
+
+    <!-- 3.1 -->
+    <div class="n-panel" data-sec2="act3-physical">
+      <p class="act-tag rv">Act 3 — Kigali Rebuilt, 2004–2024</p>
+      <h2 class="n-h rv">The Physical Rebuild</h2>
+      <p class="n-p rv">The physical transformation of Kigali between 2000 and 2024 is visible from space. New neighborhoods on previously empty hillsides. Roads connecting formerly isolated peri-urban communities. Health centers distributed to within walking distance of every sector.</p>
+      <p class="n-p rv rv-d2">The Rwanda Housing Authority oversaw a process of land redistribution and neighborhood reconstruction that relocated hundreds of thousands of people from unsafe hillside settlements into planned housing zones — a process that was contested, imperfect, and also, by any objective measure, transformative.</p>
+      <div class="stats rv rv-d3">
+        <div class="stat green-stat">
+          <div class="stat-v gv">100K+</div>
+          <div class="stat-l glb">Formal housing units built 2000–2020</div>
+          <div class="stat-s">Rwanda Housing Authority</div>
+        </div>
+        <div class="stat green-stat">
+          <div class="stat-v gv">~35%</div>
+          <div class="stat-l glb">Kigali green space coverage, 2024</div>
+          <div class="stat-s">City of Kigali Urban Development Plan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.2 -->
+    <div class="n-panel" data-sec2="act3-reconciliation">
+      <p class="act-tag rv">Act 3 — Panel 3.2</p>
+      <h2 class="n-h rv">Reconciliation Infrastructure on the Map</h2>
+      <p class="n-p rv">What distinguishes Kigali's recovery from comparable post-conflict cities is that reconciliation infrastructure was treated as urban infrastructure. Memorial sites were maintained and expanded as the city grew around them. Community dialogue spaces were built alongside roads and utilities.</p>
+      <p class="n-p rv rv-d2">Memory and growth are not competing — they are mapped together.</p>
+      <div class="bq green rv rv-d3">
+        <p class="bq-text">"People ask me: how did Kigali grow so fast? My answer is always: it grew because people trusted each other enough to invest. And that trust was built by the reconciliation work. You cannot separate the economics from the healing. They are the same project."</p>
+        <p class="bq-source green">Composite voice — urban planner and returnee, Nyarugenge district</p>
+      </div>
+    </div>
+
+    <!-- 3.3 -->
+    <div class="n-panel" data-sec2="act3-periurban">
+      <p class="act-tag rv">Act 3 — Panel 3.3</p>
+      <h2 class="n-h rv">Peri-Urban Communities: The Resilience the City Owes</h2>
+      <p class="n-p rv">Kigali's city center gets the headlines. But Kigali's recovery was anchored on its edges. Peri-urban communities in Gasabo and Kicukiro absorbed the largest populations of returnees and internally displaced people after 1994.</p>
+      <p class="n-p rv rv-d2">Community health networks in these sectors — the remarkable system of volunteer community health workers Rwanda built from the ground up — became the backbone of recovery in neighborhoods that official statistics barely reached.</p>
+      <div class="bq green rv rv-d3">
+        <p class="bq-text">"We did not wait for someone to come and rebuild us. We had the abayobozi b'umudugudu — the village-level leaders — and we had each other. That is what held the hills together in those first years."</p>
+        <p class="bq-source green">Composite voice — peri-urban community health worker, Gasabo district</p>
+      </div>
+    </div>
+
+    <!-- 4.1 -->
+    <div class="n-panel" data-sec2="act4-young">
+      <p class="act-tag rv">Act 4 — The Young City</p>
+      <h2 class="n-h rv">The Generation Born After</h2>
+      <p class="n-p rv">More than half of Rwanda's population today was born after 1994. In Kigali, that proportion is even higher. For these young residents, the genocide is history — taught in schools, marked in memorials, present in family stories — but their daily experience of the city is one of movement, possibility, and a national identity deliberately constructed to transcend the divisions of the past.</p>
+      <div class="bq green rv rv-d2">
+        <p class="bq-text">"I know what happened. My grandmother told me, my teachers told me, the memorial told me. And I also live in a city where my friends are from every background, where we argue about football and opportunities. Both things are true. I don't need to choose between them."</p>
+        <p class="bq-source green">Composite voice — university student, Kimironko, drawn from youth dialogue documentation</p>
+      </div>
+    </div>
+
+    <!-- 4.2 -->
+    <div class="n-panel" data-sec2="act4-innovation">
+      <p class="act-tag rv">Act 4 — Panel 4.2</p>
+      <h2 class="n-h rv">Innovation and Ambition</h2>
+      <p class="n-p rv">Kigali today hosts Carnegie Mellon University Africa's engineering campus, the African Institute for Mathematical Sciences, and a growing cluster of technology and innovation ventures. The Kigali Convention Centre positions the city as a continental conference and investment destination.</p>
+      <p class="n-p rv rv-d2">These are not incidental economic developments. They are the consequence of a thirty-year investment in stability, governance, and the social trust that makes investment possible.</p>
+      <div class="stats rv rv-d3">
+        <div class="stat green-stat">
+          <div class="stat-v gv">Top 5</div>
+          <div class="stat-l glb">Africa's top business-friendly cities 2023</div>
+          <div class="stat-s">African Development Bank</div>
+        </div>
+        <div class="stat green-stat">
+          <div class="stat-v gv">400+</div>
+          <div class="stat-l glb">International conferences hosted in Kigali 2019</div>
+          <div class="stat-s">Rwanda Development Board</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.3 -->
+    <div class="n-panel" data-sec2="act4-kwibuka">
+      <p class="act-tag rv">Act 4 — Panel 4.3</p>
+      <h2 class="n-h rv">Memory Carried Forward</h2>
+      <p class="n-p rv">Every year in April, Kigali marks Kwibuka — the national period of remembrance. For young Kigali residents, Kwibuka is something they choose to participate in as adults of the recovery. The flame lighting ceremonies, the public testimonies, the walks to memorial sites — these are not obligations. They are acts of an identity this generation is actively choosing.</p>
+      <div class="bq green rv rv-d2">
+        <p class="bq-text">"Kwibuka is not about guilt. It is not about ethnicity. It is about the fact that what happened here was wrong, and we will not forget it, and we will make sure it never happens anywhere again if we can help it. That is what it means to be from Kigali."</p>
+        <p class="bq-source green">Composite voice — secondary school teacher, Gasabo district</p>
+      </div>
+    </div>
+
+  </div><!-- /sc-story -->
+</div><!-- /light sidecar -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     EPILOGUE
+═══════════════════════════════════════════════════════════════ -->
+<section class="epilogue">
+  <div class="epilogue-inner">
+    <div class="section-mark green rv">Epilogue — A Model the World Needs</div>
+    <h2 class="ep-h rv">What Kigali Proved</h2>
+    <p class="prose light rv">Kigali's thirty-year recovery has demonstrated something that development theory has long argued but rarely seen at scale: that community-led healing and economic growth are not competing priorities. They are the same project.</p>
+    <p class="prose light rv rv-d2">The gacaca courts did not delay Kigali's economic development. They enabled it — by creating the social trust without which no real investment is possible. The reconciliation villages did not complicate urban planning. They modeled a form of community cohesion that makes planning work. The community health worker network did not slow institutional health system building. It built the institutional health system, from the ground up, in every sector of the city.</p>
+    <div class="divider green rv"></div>
+    <h2 class="ep-h rv">What Other Cities Can Learn</h2>
+    <p class="prose light rv">Cities recovering from mass violence face a common temptation: to build over the past as quickly as possible, to treat reconstruction as a physical problem and healing as a separate, private matter. Kigali made the opposite choice — and three decades of evidence suggest that choice was correct.</p>
+    <p class="prose light rv rv-d2">The lessons are transferable. Community-based transitional justice does not require Rwanda's specific cultural or institutional context to work; it requires commitment, resources, and the political will to trust communities with their own recovery. The specific shape of Kigali's recovery belongs to Rwanda. The principles belong to everyone.</p>
+    <div class="bq green rv">
+      <p class="bq-text dark">"We did not rebuild Kigali to prove something to the world. We rebuilt it because we live here, and we wanted to live well, and we wanted our children to live well. If other places can learn from that, we are glad. But the city was always for us first."</p>
+      <p class="bq-source green">Composite voice — community elder, Nyamirambo</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CALL TO ACTION
+═══════════════════════════════════════════════════════════════ -->
+<section class="cta">
+  <div class="cta-inner">
+    <div class="section-mark rv">Call to Action</div>
+    <h2 class="cta-h rv">Remember Forward<br><em>With Us</em></h2>
+    <div class="cta-tiers rv">
+      <div class="cta-tier">
+        <p class="cta-tier-tag">Feel</p>
+        <p class="cta-tier-p">Thirty years ago, Kigali's hills held unimaginable loss. Today, they hold a city of 1.4 million people who chose — deliberately, collectively, and courageously — to build something the world now looks to as a model. That choice was not inevitable. It was made, every day, by people who decided that the future was worth more than the divisions of the past.</p>
+      </div>
+      <div class="cta-tier">
+        <p class="cta-tier-tag">Think Differently</p>
+        <p class="cta-tier-p">Kigali is not a 'post-genocide city.' It is a living proof of concept: that community-led recovery works, that memory and growth are not opposites, and that what communities choose to do together can exceed anything that outside institutions design for them.</p>
+      </div>
+      <div class="cta-tier">
+        <p class="cta-tier-tag">Take Action</p>
+        <p class="cta-tier-p">Share this story with urban planners, peacebuilders, and development organizations working in post-conflict cities — from Mosul to Freetown to Mariupol. Kigali's experience holds lessons that other cities desperately need.</p>
+      </div>
+    </div>
+    <div class="cta-partners rv">
+      <p class="partners-label">Partner Organizations</p>
+      <div class="partners-row">
+        <span class="partner">Never Again Rwanda</span>
+        <span class="partner">Aegis Trust</span>
+        <span class="partner">Ibuka</span>
+        <span class="partner">City of Kigali</span>
+        <span class="partner">Rwanda Governance Board</span>
+        <span class="partner">UN-Habitat</span>
+      </div>
+    </div>
+    <p class="cta-note rv">All quoted voices are composites drawn from documented testimony in gacaca court records, Never Again Rwanda publications, Aegis Trust documentation, and Ibuka survivor accounts. Individual names have not been used to protect the privacy and dignity of community members. Map coordinates are sourced from the StoryMap Points dataset (April 2026). Launch recommended around April 7 — the start of Rwanda's annual Kwibuka remembrance period.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════ -->
+<script>
+// ── MAP DATA ────────────────────────────────────────────────────────
+const pts = [
+  {id:1,  name:"Kigali Genocide Memorial (Gisozi)", lat:-1.9441, lng:30.0619, cat:"Memorial",              act:1, col:"#b83232", pop:"<b>Kigali Genocide Memorial</b><br>Gisozi Hill, Gasabo District<br><i>250,000+ victims interred</i><br>Opened: 1999 · Managed by Aegis Trust"},
+  {id:2,  name:"Nyamata Genocide Memorial",         lat:-2.1425, lng:30.1108, cat:"Memorial",              act:1, col:"#b83232", pop:"<b>Nyamata Memorial</b><br>Bugesera District<br><i>~45,000 victims interred</i><br>Preserved church genocide site"},
+  {id:3,  name:"Ntarama Genocide Memorial",         lat:-2.098,  lng:30.1315, cat:"Memorial",              act:1, col:"#b83232", pop:"<b>Ntarama Memorial</b><br>Bugesera District<br><i>~5,000 victims interred</i>"},
+  {id:4,  name:"Saint Famille Church",              lat:-1.9512, lng:30.0601, cat:"Memorial",              act:1, col:"#b83232", pop:"<b>Saint Famille Church</b><br>Nyarugenge District<br>Historical genocide refuge site — complex history"},
+  {id:5,  name:"Former UNAMIR HQ",                 lat:-1.9499, lng:30.0588, cat:"Memorial",              act:1, col:"#b83232", pop:"<b>Former UNAMIR HQ</b><br>Now Rwanda's Parliament<br>Site of UN mission during the genocide"},
+  {id:6,  name:"Gisozi Community Area",             lat:-1.9430, lng:30.0630, cat:"RecVillage",            act:2, col:"#f39c12", pop:"<b>Gisozi Community Area</b><br>Gasabo District<br>Post-conflict resettlement — memory and daily life coexisting on the same hill"},
+  {id:7,  name:"Mbyo Reconciliation Village",       lat:-2.1700, lng:30.1200, cat:"RecVillage",            act:2, col:"#f39c12", pop:"<b>Mbyo Reconciliation Village</b><br>Bugesera District<br>Survivors and perpetrators' families as neighbors<br><i>~60+ families · est. 2003</i>"},
+  {id:8,  name:"Ruhuka Reconciliation Community",   lat:-1.9800, lng:30.1100, cat:"RecVillage",            act:2, col:"#f39c12", pop:"<b>Ruhuka Community</b><br>Gasabo District<br>Community reconciliation initiative"},
+  {id:9,  name:"Nyamirambo Gacaca Court Site",      lat:-1.9780, lng:30.0420, cat:"Gacaca",               act:2, col:"#e67e22", pop:"<b>Nyamirambo Gacaca Site</b><br>Nyarugenge District<br>Hundreds of cases processed 2002–2012<br>Now one of Kigali's most vibrant neighborhoods"},
+  {id:10, name:"Kimironko Gacaca Court Site",       lat:-1.9340, lng:30.0950, cat:"Gacaca",               act:2, col:"#e67e22", pop:"<b>Kimironko Gacaca Site</b><br>Gasabo District<br>High-returnee sector — diaspora and survivor testimonies"},
+  {id:11, name:"Kicukiro Gacaca Court Site",        lat:-1.9900, lng:30.0970, cat:"Gacaca",               act:2, col:"#e67e22", pop:"<b>Kicukiro Gacaca Site</b><br>Kicukiro District<br>High IDP resettlement sector"},
+  {id:12, name:"Remera Gacaca Court Site",          lat:-1.9530, lng:30.1010, cat:"Gacaca",               act:2, col:"#e67e22", pop:"<b>Remera Gacaca Site</b><br>Gasabo District<br>Near airport corridor"},
+  {id:13, name:"Nyarugenge Gacaca Court Site",      lat:-1.9500, lng:30.0580, cat:"Gacaca",               act:2, col:"#e67e22", pop:"<b>Nyarugenge Gacaca Site</b><br>Downtown Kigali — historic commercial and residential core"},
+  {id:25, name:"Never Again Rwanda HQ",             lat:-1.9500, lng:30.0720, cat:"CivilSociety",         act:2, col:"#d63870", pop:"<b>Never Again Rwanda</b><br>Founded: 2000<br>Community dialogue, civic education, youth programs across all Kigali districts"},
+  {id:26, name:"Ibuka Rwanda Offices",              lat:-1.9520, lng:30.0660, cat:"CivilSociety",         act:2, col:"#d63870", pop:"<b>Ibuka Rwanda</b><br>Rwanda's primary genocide survivors' association<br>Central to gacaca support and ongoing community healing"},
+  {id:14, name:"Kanombe Community Health Center",   lat:-1.9730, lng:30.1300, cat:"HealthCenter",         act:3, col:"#27ae60", pop:"<b>Kanombe Community Health Center</b><br>Kicukiro District · Built: 2001<br>Part of Rwanda's national community health expansion"},
+  {id:15, name:"Gasabo District Health Center",     lat:-1.9250, lng:30.0880, cat:"HealthCenter",         act:3, col:"#27ae60", pop:"<b>Gasabo District Health Center</b><br>Serves 500,000+ residents<br>Expanded during post-conflict reconstruction"},
+  {id:16, name:"Kicukiro District Hospital",        lat:-1.9870, lng:30.1020, cat:"HealthCenter",         act:3, col:"#27ae60", pop:"<b>Kicukiro District Hospital</b><br>Rebuilt post-1994 — regional referral center"},
+  {id:17, name:"Kibagabaga Hospital",               lat:-1.9200, lng:30.0960, cat:"HealthCenter",         act:3, col:"#27ae60", pop:"<b>Kibagabaga Hospital</b><br>Major expansion 2000–2015<br>Maternal health and community programs"},
+  {id:18, name:"Rwanda Housing Authority HQ",       lat:-1.9550, lng:30.0680, cat:"Reconstruction",       act:3, col:"#2980b9", pop:"<b>Rwanda Housing Authority</b><br>Nyarugenge District<br>Oversaw 100,000+ housing units across Kigali"},
+  {id:19, name:"Kigali City Tower",                 lat:-1.9455, lng:30.0608, cat:"Reconstruction",       act:3, col:"#2980b9", pop:"<b>Kigali City Tower</b><br>Nyarugenge District<br>Symbol of economic transformation"},
+  {id:27, name:"Nyamirambo Women's Center",         lat:-1.9770, lng:30.0440, cat:"CivilSociety",         act:3, col:"#d63870", pop:"<b>Nyamirambo Women's Center</b><br>Women-led community healing and economic empowerment"},
+  {id:28, name:"Gahanga Peri-Urban Community",      lat:-1.9980, lng:30.0850, cat:"PeriUrban",            act:3, col:"#7d5a3c", pop:"<b>Gahanga Sector</b><br>Kicukiro District<br>High IDP/returnee settlement · Community health network est. 2000"},
+  {id:29, name:"Rusororo Peri-Urban Community",     lat:-1.8990, lng:30.1370, cat:"PeriUrban",            act:3, col:"#7d5a3c", pop:"<b>Rusororo Sector</b><br>Northern Gasabo<br>Informal self-organization central to early recovery"},
+  {id:30, name:"Masaka Peri-Urban Community",       lat:-2.0100, lng:30.1050, cat:"PeriUrban",            act:3, col:"#7d5a3c", pop:"<b>Masaka Sector</b><br>Kicukiro District<br>Strong gacaca participation · Early community health site"},
+  {id:31, name:"Ndera Peri-Urban Community",        lat:-1.9050, lng:30.1600, cat:"PeriUrban",            act:3, col:"#7d5a3c", pop:"<b>Ndera Sector</b><br>Eastern Gasabo<br>Returnee-heavy · Agricultural cooperatives as economic reconciliation"},
+  {id:20, name:"Kigali Convention Centre",          lat:-1.9512, lng:30.0617, cat:"Innovation",           act:4, col:"#16a085", pop:"<b>Kigali Convention Centre</b><br>Opened: 2016 · 400+ international events annually<br>Economic dividend of 30 years of stability-building"},
+  {id:21, name:"Carnegie Mellon University Africa", lat:-1.9544, lng:30.0937, cat:"University",           act:4, col:"#6c3d8a", pop:"<b>Carnegie Mellon University Africa</b><br>Opened: 2012 · Only CMU campus outside the US<br>Master's programs in ICT and engineering"},
+  {id:22, name:"AIMS Rwanda",                       lat:-1.9580, lng:30.1300, cat:"University",           act:4, col:"#6c3d8a", pop:"<b>AIMS Rwanda</b><br>Opened: 2016<br>Postgraduate mathematical sciences — part of pan-African network"},
+  {id:23, name:"University of Rwanda (Kigali)",     lat:-1.9640, lng:30.0740, cat:"University",           act:4, col:"#6c3d8a", pop:"<b>University of Rwanda</b><br>Kigali facilities<br>Formed 2013 by merger — institutional consolidation as governance reform"},
+  {id:24, name:"Kigali Innovation City",            lat:-1.9260, lng:30.1130, cat:"Innovation",           act:4, col:"#16a085", pop:"<b>Kigali Innovation City</b><br>Gasabo District<br>Under development — knowledge economy campus"},
+  {id:32, name:"Amahoro Stadium (Kwibuka)",         lat:-1.9600, lng:30.0940, cat:"Kwibuka",              act:4, col:"#c8960a", pop:"<b>Amahoro National Stadium</b><br>'Amahoro' means peace<br>Annual Kwibuka flame ceremony — April 7 each year<br>Also a genocide refuge site in 1994"},
+  {id:33, name:"KGM Education Center",              lat:-1.9445, lng:30.0622, cat:"Memorial",             act:4, col:"#b83232", pop:"<b>KGM Education Center</b><br>Gisozi Hill<br>School visits, teacher training, international delegations<br>Memory education as civic infrastructure"},
+  {id:34, name:"Nyamirambo (Symbolic Center)",      lat:-1.9770, lng:30.0430, cat:"Anchor",               act:0, col:"#5d7a88", pop:"<b>Nyamirambo</b><br>Nyarugenge District<br>Kigali's most layered neighborhood — Muslim quarter, commercial hub, survivor community"},
+  {id:35, name:"Kimironko (Returnee Anchor)",       lat:-1.9340, lng:30.0955, cat:"Anchor",               act:0, col:"#5d7a88", pop:"<b>Kimironko</b><br>Gasabo District<br>Primary diaspora returnee settlement zone after 1994<br>One of Kigali's largest commercial hubs"}
+];
+
+// ── MAP 1 (DARK) ────────────────────────────────────────────────────
+const m1 = L.map('map1', {
+  center: [-1.9536, 30.0606], zoom: 12,
+  zoomControl: true, scrollWheelZoom: false, attributionControl: true
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  maxZoom: 19
+}).addTo(m1);
+
+// ── MAP 2 (LIGHT) ───────────────────────────────────────────────────
+const m2 = L.map('map2', {
+  center: [-1.9536, 30.0606], zoom: 12,
+  zoomControl: true, scrollWheelZoom: false, attributionControl: true
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  maxZoom: 19
+}).addTo(m2);
+
+// ── MARKER FACTORY ──────────────────────────────────────────────────
+function mkMarker(pt, map) {
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="
+      width:11px; height:11px; background:${pt.col};
+      border-radius:50%; border:2px solid rgba(255,255,255,0.45);
+      box-shadow:0 0 10px ${pt.col}90;
+      transition:transform 0.2s;
+      cursor:pointer;
+    " onmouseover="this.style.transform='scale(1.6)'" onmouseout="this.style.transform='scale(1)'"></div>`,
+    iconSize:[11,11], iconAnchor:[5.5,5.5]
+  });
+  return L.marker([pt.lat, pt.lng], {icon})
+    .bindPopup(pt.pop, {maxWidth:240, className:'kgl-popup'});
+}
+
+// ── LAYER GROUPS ────────────────────────────────────────────────────
+const g1_act1 = L.layerGroup(); // memorials Act1
+const g1_act2 = L.layerGroup(); // gacaca, rec villages, civil society Act2
+const g2_act3 = L.layerGroup(); // health, reconstruction, peri-urban Act3
+const g2_act4 = L.layerGroup(); // innovation, universities, kwibuka Act4
+
+pts.forEach(pt => {
+  if (pt.act === 1) mkMarker(pt, m1).addTo(g1_act1);
+  else if (pt.act === 2) mkMarker(pt, m1).addTo(g1_act2);
+  else if (pt.act === 3) mkMarker(pt, m2).addTo(g2_act3);
+  else if (pt.act === 4) mkMarker(pt, m2).addTo(g2_act4);
+  else { // act 0 = anchors, add to both
+    mkMarker(pt, m1).addTo(g1_act1);
+    mkMarker(pt, m2).addTo(g2_act3);
+  }
+});
+
+// ── SECTION MAP CONFIGS ─────────────────────────────────────────────
+const cfg1 = {
+  'overview':        { c:[-1.9536,30.0606], z:12, layers:[],              lbl:'Kigali Overview' },
+  'act1-gisozi':     { c:[-1.9441,30.0619], z:15, layers:[g1_act1],       lbl:'Gisozi Hill — Genocide Memorial' },
+  'act1-memorials':  { c:[-1.9536,30.0606], z:11, layers:[g1_act1],       lbl:'Memorial Sites — Kigali' },
+  'act2-survivor':   { c:[-1.9500,30.0700], z:13, layers:[g1_act1,g1_act2], lbl:'Survivor Communities' },
+  'act2-gacaca':     { c:[-1.9550,30.0700], z:12, layers:[g1_act1,g1_act2], lbl:'Gacaca Court Sites' },
+  'act2-returnees':  { c:[-1.9340,30.0950], z:14, layers:[g1_act1,g1_act2], lbl:'Kimironko — Returnee Settlement' },
+  'act2-villages':   { c:[-2.1200,30.1150], z:12, layers:[g1_act1,g1_act2], lbl:'Mbyo Reconciliation Village' }
+};
+
+const cfg2 = {
+  'act3-physical':       { c:[-1.9536,30.0606], z:12, layers:[g2_act3],         lbl:'Kigali Reconstruction' },
+  'act3-reconciliation': { c:[-1.9550,30.0700], z:13, layers:[g2_act3],         lbl:'Reconciliation Infrastructure' },
+  'act3-periurban':      { c:[-1.9500,30.1050], z:11, layers:[g2_act3],         lbl:'Peri-Urban Communities' },
+  'act4-young':          { c:[-1.9536,30.0606], z:12, layers:[g2_act3,g2_act4], lbl:'The Young City' },
+  'act4-innovation':     { c:[-1.9450,30.0920], z:13, layers:[g2_act3,g2_act4], lbl:'Innovation & Universities' },
+  'act4-kwibuka':        { c:[-1.9600,30.0940], z:14, layers:[g2_act3,g2_act4], lbl:'Kwibuka — Amahoro Stadium' }
+};
+
+// ── UPDATE MAP FUNCTIONS ────────────────────────────────────────────
+function updateM1(key) {
+  const c = cfg1[key]; if (!c) return;
+  document.getElementById('tagTxt1').textContent = c.lbl;
+  [g1_act1, g1_act2].forEach(g => { if (m1.hasLayer(g)) m1.removeLayer(g); });
+  c.layers.forEach(g => g.addTo(m1));
+  m1.flyTo(c.c, c.z, {duration:1.4, easeLinearity:0.5});
+}
+
+function updateM2(key) {
+  const c = cfg2[key]; if (!c) return;
+  document.getElementById('tagTxt2').textContent = c.lbl;
+  [g2_act3, g2_act4].forEach(g => { if (m2.hasLayer(g)) m2.removeLayer(g); });
+  c.layers.forEach(g => g.addTo(m2));
+  m2.flyTo(c.c, c.z, {duration:1.4, easeLinearity:0.5});
+}
+
+// ── INTERSECTION OBSERVER — PANELS ──────────────────────────────────
+const obs1 = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting && e.target.dataset.sec1) updateM1(e.target.dataset.sec1); });
+}, {threshold:0.42});
+
+const obs2 = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting && e.target.dataset.sec2) updateM2(e.target.dataset.sec2); });
+}, {threshold:0.42});
+
+document.querySelectorAll('[data-sec1]').forEach(el => obs1.observe(el));
+document.querySelectorAll('[data-sec2]').forEach(el => obs2.observe(el));
+
+// ── REVEAL OBSERVER ─────────────────────────────────────────────────
+const rvObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, {threshold:0.08});
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
+// ── INIT ────────────────────────────────────────────────────────────
+updateM1('overview');
+g2_act3.addTo(m2);
+</script>
+</body>
+</html>
